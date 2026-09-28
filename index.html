@@ -118,7 +118,7 @@
       pointer-events: none;
     }
 
-    /* 內藏的信件卡片 - 「恭喜中獎」文字位置已上挪 */
+   /* 內藏的信件卡片 - 支援全螢幕自動彈性縮放 */
     .letter {
       position: absolute;
       background: var(--paper);
@@ -133,9 +133,13 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding-bottom: 70px; /* 向上提拉文字位置 */
+      
+      /* 關鍵修改：用 clamp 自動計算距離，最小留 40px、最大 110px，中間隨視窗高度 18vh 動態縮放 */
+      padding-bottom: clamp(20px, 8vh, 65px);
+      
       color: var(--ink);
-      font-size: 23px;
+      /* 關鍵修改：字體大小也隨著螢幕寬度自動等比例微調 (最小 18px，最大 26px) */
+      font-size: clamp(18px, 4.5vw, 26px);
       font-weight: 600;
       letter-spacing: 0.1em;
     }
@@ -211,32 +215,71 @@
       opacity: 1;
     }
 
-/* 邀請函圖片外框容器 */
+/* 邀請函圖片外框容器 - 響應式自動縮放 */
     .invitation-card-wrap {
-      max-width: 75vw; /* 👈 放大圖片最大寬度為視窗的 90% */
-      width: 100%;
+      width: 90%;             /* 預設在手機上佔據 90% 的視窗寬度 */
+      max-width: 700px;        /* 在大螢幕（電腦）上最大不超過 700px，避免過大失真 */
+      margin: 0 auto;         /* 保持置中 */
       background: #111111;
       border: 1px solid #7d6333;
-      padding: 12px;
+      padding: clamp(8px, 2vw, 16px); /* 內框金邊間距也會隨螢幕大小自動縮放 */
       box-shadow: 0 20px 50px rgba(0,0,0,0.6);
       border-radius: 2px;
     }
 
+    /* 1. 邀請函外框容器（鎖定邊界，防止光線溢出） */
+    .invitation-card-wrap {
+      width: 90%;
+      max-width: 700px;
+      margin: 0 auto;
+      background: #111111;
+      border: 1px solid #c6a062;
+      padding: 0; /* 設為 0，讓圖片完全貼合外框 */
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden; /* 確保金光絕不超出圖片邊界 */
+      box-shadow: 0 15px 35px rgba(0,0,0,0.7), 0 0 25px rgba(198, 160, 98, 0.3);
+    }
+
+    /* 2. 邀請函圖片（確保圖片不變形、滿版呈現） */
     .invitation-img {
       width: 100%;
       height: auto;
-      display: block;
-      border: 1px solid #7d6333;
+      display: block; /* 消除圖片下方預設縫隙 */
+      object-fit: contain; /* 保持原圖比例不拉伸 */
     }
 
-    .caption {
-      margin-top: 24px;
-      font-size: 15px;
-      letter-spacing: .2em;
-      color: #ffffff;
-      text-transform: uppercase;
-      font-weight: 600;
-      text-align: center;
+ /* ✨ 超柔和羽化金光特效本體 ✨ */
+    .invitation-card-wrap::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -200%;
+      width: 150%;
+      height: 200%;
+      /* 調整為超低飽和度的柔和香檳金漸層 */
+      background: linear-gradient(
+        60deg, 
+        transparent 10%, 
+        rgba(255, 248, 220, 0.05) 30%,
+        rgba(255, 235, 170, 0.25) 50%, 
+        rgba(255, 248, 220, 0.05) 70%,
+        transparent 90%
+      );
+      transform: rotate(25deg);
+      pointer-events: none;
+      /* 👈 關鍵：高階柔焦羽化濾鏡，讓光影極度柔和生動 */
+      filter: blur(8px);
+    }
+
+    /* 0 秒即刻觸發 10 秒極致平滑輕撫過 */
+    .main-content.visible .invitation-card-wrap::after {
+      animation: shineSweep10s 7s cubic-bezier(0.2, 0.8, 0.2, 1) 0s forwards;
+    }
+
+    @keyframes shineSweep10s {
+      0% { left: -200%; }
+      100% { left: 200%; }
     }
   </style>
 </head>
