@@ -20,32 +20,36 @@
     html, body { height: 100%; margin: 0; padding: 0; background: var(--bg-color); font-family: "Noto Serif TC", "Cormorant Garamond", serif; color: var(--ink); }
     button { font: inherit; cursor: pointer; }
 
-    /* 開場信封區域 */
+   /* 1. 開場背景容器（設定完美全螢幕垂直與水平置中） */
     .opening-screen {
       position: fixed;
       inset: 0;
-      display: grid;
-      place-items: center;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
       padding: 24px;
       background: radial-gradient(circle at 50% 30%, #5d7fa8 0%, var(--bg-color) 70%, #355075 100%);
-      transition: opacity .8s ease, transform .8s ease;
+      transition: opacity .8s cubic-bezier(0.4, 0, 0.2, 1), transform .8s cubic-bezier(0.4, 0, 0.2, 1);
       z-index: 10;
     }
+    
     .opening-screen.is-open {
       opacity: 0;
-      transform: translateY(-24px);
+      transform: translateY(-20px) scale(0.97);
       pointer-events: none;
     }
 
-    .envelope-wrap { width: min(520px, 92vw); text-align: center; }
-    
-    .kicker {
-      color: var(--gold-accent);
-      font-weight: 900;
-      font-size: 15px;
-      letter-spacing: .35em;
-      text-transform: uppercase;
-      margin-bottom: 24px;
+    /* 2. 信封包裹容器（消除上下外邊距干擾，確保置中） */
+    .envelope-wrap { 
+      width: min(520px, 92vw); 
+      text-align: center; 
+      position: relative; 
+      margin: 0 auto !important; /* 確保水平居中 */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     /* 金色復古信封本體 */
@@ -284,7 +288,7 @@
 
     /* 0 秒即刻觸發 10 秒極致平滑輕撫過 */
     .main-content.visible .invitation-card-wrap::after {
-      animation: shineSweep10s 7s cubic-bezier(0.2, 0.8, 0.2, 1) 0s forwards;
+      animation: shineSweep10s 8s cubic-bezier(0.2, 0.8, 0.2, 1) 0s forwards;
     }
 
     @keyframes shineSweep10s {
@@ -317,11 +321,9 @@
     <div class="invitation-card-wrap">
       
       <!-- 
-        👇【Google 雲端硬碟圖片網址】👇
-        備註：請將下方 src 網址最後面的「您的Google雲端硬碟檔案ID」替換掉即可。
-        （提示：雲端圖片請將共用權限設為「知道連結的任何人」）
+        👇【圖片網址】👇
       -->
-    <img class="invitation-img" src="https://files.catbox.moe/m1znmn.jpg" alt="邀請函">
+    <img class="invitation-img" src="https://files.catbox.moe/43ezpy.png" alt="邀請函">
     </div>
 
     <p class="caption">誠摯邀請您共襄盛舉</p>
